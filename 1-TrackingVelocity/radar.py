@@ -9,7 +9,6 @@ class RadarSIM2D:
     * acc     : constant acceleration of object (m/s^2)
     * std_dev : standart deviation of the measurement (sigma)
     """
-    
     def __init__(self, range=float, vel=float, acc=float, std_dev=float):
         self.startrange = range
         self.objrange = range
