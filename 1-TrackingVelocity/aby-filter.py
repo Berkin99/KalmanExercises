@@ -4,7 +4,7 @@
 import radar
 import matplotlib.pyplot as plt
  
-radar = radar.RadarSIM2D(0, 1, 0, 5)
+radar = radar.RadarSIM2D(0, 1, 0.03, 1)
 
 range_real = []
 vel_real   = []
@@ -18,15 +18,18 @@ range_next = 0
 vel_last = 0
 vel_next = 0
 
+acc_last = 0
+acc_next = 0
+
 i = 0
 dt= 1
 
 
-A = 0.25 # Alpha α
-B = 0.02 # Beta  ß
+A = 0.9  # Alpha α
+B = 0.1  # Beta  ß
+Y = 0.01  # Gamma 
 
-
-""" Alpha Beta Filter """
+""" Alpha Beta Gamma Filter """
 while i<100:
     radar.iterate(1)
     range_real.append(radar.get_truerange())
@@ -37,16 +40,20 @@ while i<100:
 
     """ State Update Equations """
     # 2: Current Estimate with State Update Equation    
-    range_now = range_next + A*(Zn - range_next)
-    vel_now = vel_next + B*(Zn - range_next)/dt
+    range_now   = range_next  + A*(Zn - range_next)
+    vel_now     = vel_next    + B*(Zn - range_next)/dt
+    acc_now     = acc_next    + Y*(Zn - range_next)/(0.5*dt*dt)
 
     """ State Extrapolation Equations """
     # 3: Calculating the next state for next State Update Equation
-    range_next = range_now + vel_now*dt #  x̂n+1,n = x̂n,n + vn,n*dt 
-    range_last = range_now   
+    range_next = range_now + vel_now*dt + acc_now*dt*dt/2  #  x̂n+1,n = x̂n,n + vn,n*dt + an,n*dt^2 /2    
+    range_last = range_now  
 
-    vel_next = vel_now
+    vel_next = vel_now + acc_now*dt 
     vel_last = vel_now
+    
+    acc_next = acc_now
+    acc_last = acc_now
 
     # E: Plot values
     vel_m.append(vel_now)
@@ -62,11 +69,11 @@ while i<100:
 
 #     Zn = radar.get_measurement()
 
-#     range_now = 0.9*range_last + 0.1*(Zn)
-#     range_m.append(range_now) 
-
-#     vel_now =  0.2*vel_last + 0.8*(range_now - range_last)/dt
+#     vel_now =  0.9*vel_last + 0.1*(Zn - range_last)/dt
 #     vel_m.append(vel_now)
+
+#     range_now = 0.1*range_last + 0.9*(Zn)
+#     range_m.append(range_now) 
 
 #     range_last = range_now
 #     vel_last = vel_now
