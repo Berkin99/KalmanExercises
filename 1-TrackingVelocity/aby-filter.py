@@ -133,5 +133,5 @@ def low_pass_test(Gain = float):
     plt.grid(True)
     plt.show()
 
-alpha_beta_gamma_test(0.5,0.05,0.0079)
-# low_pass_test(0.5)
+#alpha_beta_gamma_test(0.5,0.05,0.0079)
+low_pass_test(0.1)
