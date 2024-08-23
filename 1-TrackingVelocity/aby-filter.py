@@ -2,7 +2,7 @@
 import radar
 import matplotlib.pyplot as plt
  
-radar = radar.RadarSIM2D(0, 1, 0.1, 5)
+radar = radar.RadarSIM2D(0, 1, 0, 1)
 
 """ Alpha Beta Gamma Filter """
 def alpha_beta_gamma_test(alpha,beta,gamma):
@@ -11,16 +11,18 @@ def alpha_beta_gamma_test(alpha,beta,gamma):
     Y = gamma  # Gamma 
 
     range_real = []
-    vel_real   = []
+    vel_real   = [0,2]
+
+    measurements = []
 
     range_m = []
     vel_m = []
 
     range_last = 0
-    range_next = 0
+    range_next = 1
 
     vel_last = 0
-    vel_next = 0
+    vel_next = 1
 
     acc_last = 0
     acc_next = 0
@@ -35,6 +37,7 @@ def alpha_beta_gamma_test(alpha,beta,gamma):
 
         # 1: Get the measurement 
         Zn = radar.get_measurement()
+        measurements.append(Zn)
 
         """ State Update Equations """
         # 2: Current Estimate with State Update Equation    
@@ -70,6 +73,7 @@ def alpha_beta_gamma_test(alpha,beta,gamma):
     plt.grid(True)
 
     plt.subplot(1, 2, 2)  # 1 satır, 2 sütun, 2. grafik
+    plt.plot(measurements, color = 'purple', marker='x')
     plt.plot(range_m, marker='o')
     plt.plot(range_real,color='black')
     plt.title('Range')
@@ -133,5 +137,5 @@ def low_pass_test(Gain = float):
     plt.grid(True)
     plt.show()
 
-alpha_beta_gamma_test(0.5,0.05,0.0279)
+alpha_beta_gamma_test(0.1,0.01,0.000)
 #low_pass_test(0.1)
